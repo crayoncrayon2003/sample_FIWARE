@@ -17,7 +17,7 @@ URN  = "urn:ngsi-ld:Sensor:002" # data identifier
 TYPE = "Sensor"                 # data type
 
 def getSensor():
-    fiware = FiwareAPI(ORION2,SERVICE,SERVICEPATH)
+    fiware = FiwareAPI(ORION1,SERVICE,SERVICEPATH)
 
     query = {'type' : TYPE}
     urn = URN

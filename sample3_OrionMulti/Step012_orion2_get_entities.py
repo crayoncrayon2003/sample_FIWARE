@@ -26,7 +26,6 @@ def getSensor():
     fiware.printJsonString(body)
 
 def main():
-
     print("get sensor values (temperature and humidity) from orion")
     getSensor()
 
