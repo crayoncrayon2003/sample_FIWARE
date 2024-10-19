@@ -61,7 +61,7 @@ def deleteRegistrationsAll():
     # fiware.printJsonString(body)
 
     for item in json.loads(body):
-        [rsp, body] = fiware.deleteSubscriptions(urn=item["id"])
+        [rsp, body] = fiware.deleteRegistrations(urn=item["id"])
         # fiware.printResponse(rsp)
         # fiware.printJsonString(body)
 
