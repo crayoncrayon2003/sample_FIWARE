@@ -57,15 +57,15 @@ services:
     networks:
       - fiware-network
     environment:
-      - QL_DEFAULT_DB=timescale          # バックエンド: timescale また crate
-      - POSTGRES_HOST=timescale          # PostgreSQL ホスト
-      - POSTGRES_PORT=5432               # PostgreSQL ポート
-      - POSTGRES_HOST_AUTH_METHOD=trust  # PostgreSQL 認証なし
-      - POSTGRES_USER=quantumleap        # PostgreSQL ルートユーザ
-      - POSTGRES_PASSWORD=*              # PostgreSQL ルートユーザのパスワード
-      - POSTGRES_DB_NAME=quantumleap     # PostgreSQL デフォルトdb
-      - POSTGRES_DB_USER=quantumleap     # PostgreSQL デフォルトdbのユーザ
-      - POSTGRES_DB_PASS=*               # PostgreSQL デフォルトdbのパスワード
+      - QL_DEFAULT_DB=timescale          # Backend "timescale" or "crate"
+      - POSTGRES_HOST=timescale          # PostgreSQL host
+      - POSTGRES_PORT=5432               # PostgreSQL port
+      - POSTGRES_HOST_AUTH_METHOD=trust  # PostgreSQL without Authenticattion
+      - POSTGRES_USER=quantumleap        # PostgreSQL root user
+      - POSTGRES_PASSWORD=*              # PostgreSQL root user pass
+      - POSTGRES_DB_NAME=quantumleap     # PostgreSQL default db
+      - POSTGRES_DB_USER=quantumleap     # PostgreSQL default db user
+      - POSTGRES_DB_PASS=*               # PostgreSQL default db user pass
       - POSTGRES_USE_SSL=False
       - LOGLEVEL=DEBUG
     healthcheck:
@@ -81,9 +81,9 @@ services:
     networks:
       - fiware-network
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust # PostgreSQL 認証なし
-      - POSTGRES_USER=quantumleap       # PostgreSQL ルートユーザ
-      - POSTGRES_PASSWORD=*             # PostgreSQL ルートユーザのパスワード
+      - POSTGRES_HOST_AUTH_METHOD=trust # PostgreSQL without Authenticattion
+      - POSTGRES_USER=quantumleap       # PostgreSQL root user
+      - POSTGRES_PASSWORD=*             # PostgreSQL root user pass
       - TZ=Asia/Tokyo
 
   # DB Setup for Timescale(PostgreSQL)
