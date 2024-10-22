@@ -1,0 +1,1 @@
+mkdir -p ./draco/fileprocessor ./draco/database ./draco/flow_storage

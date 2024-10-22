@@ -7,15 +7,15 @@ mkdir -p ./draco/fileprocessor ./draco/database ./draco/flow_storage
 ```
 docker compose up -d
 ```
-wait for 3 minutes.
+wait for 5 minutes.
 
-# control by GUI
+# control using GUI
 Access the following URL using the Web browser.
 ```
 http://localhost:8080/nifi/
 ```
 
-# control by python
+# control using python
 ```
 pip install nipyapi
 ```
