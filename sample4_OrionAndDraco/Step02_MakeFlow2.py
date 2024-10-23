@@ -7,13 +7,13 @@ import dataclasses
 config_ini = configparser.ConfigParser()
 config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
 
-#ORION1 = 'http://{}:8081'.format(config_ini['DEFAULT']['HOST_IP'])
-ORION1 = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
+WEBSERVER = 'http://{}:8081'.format(config_ini['DEFAULT']['HOST_IP'])
+ORION1    = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
 
 SERVICE = 'service1'            # multi-tenant name
 SERVICEPATH = '/servicepath1'   # data storage path
 
-URN  = "urn:ngsi-ld:Sensor:001" # data identifier
+URN  = "urn:ngsi-ld:Sensor:002" # data identifier
 TYPE = "Sensor"                 # data type
 
 
@@ -57,6 +57,12 @@ CREATE_ENTITIES_PROCESSOR_INFOS = [
 ]
 
 # UPDATE ENTITIES INFO
+REST_API_GET_INVOKE_HTTP = {
+    'Remote URL'        : WEBSERVER,
+    'HTTP Method'       : 'GET',
+    'Content-Type'      : 'application/json',
+}
+
 UPDATE_ENTITIES_BODY = {
     "temperature": {"type": "Integer", "value": "${random():mod(100):plus(1)}", "metadata": {}},
     "humidity"   : {"type": "Integer", "value": "${random():mod(100):plus(1)}", "metadata": {}}
@@ -77,7 +83,7 @@ UPDATE_ENTITIES_INVOKE_HTTP = {
     'Fiware-ServicePath': SERVICEPATH,
 }
 UPDATE_ENTITIES_PROCESSOR_INFOS=[
-    ProcessorInfo("org.apache.nifi.processors.standard.GenerateFlowFile" ,(600,200),"GenerateFlowFile",{"autoTerminatedRelationships":["success"]},                                          '5s',UPDATE_ENTITIES_GENERATEFLOWFFILE),
+    ProcessorInfo("org.apache.nifi.processors.standard.InvokeHTTP",       (600,200),"InvokeHTTP"      ,{"autoTerminatedRelationships":["Failure","No Retry","Original","Response","Retry"]}, '5s',REST_API_GET_INVOKE_HTTP),
     ProcessorInfo("org.apache.nifi.processors.attributes.UpdateAttribute",(600,400),"UpdateAttribute" ,{"autoTerminatedRelationships":["success"]},                                          '0s',UPDATE_ENTITIES_UPDATEATTRIBUTE),
     ProcessorInfo("org.apache.nifi.processors.standard.ReplaceText",      (600,600),"ReplaceText"     ,{"autoTerminatedRelationships":["failure","success"]},                                '0s',UPDATE_ENTITIES_REPLACETEXT),
     ProcessorInfo("org.apache.nifi.processors.standard.InvokeHTTP",       (600,800),"InvokeHTTP"      ,{"autoTerminatedRelationships":["Failure","No Retry","Original","Response","Retry"]}, '0s',UPDATE_ENTITIES_INVOKE_HTTP),
@@ -116,7 +122,6 @@ def createProcessor(pg, info:ProcessorInfo):
     # return processor
     return proc
 
-
 def createflow(pg, ProcessorInfos):
     procs=[]
     # create Processor
@@ -126,10 +131,13 @@ def createflow(pg, ProcessorInfos):
 
     # connection Processor
     for idx, (source, target) in enumerate(zip(procs[:-1], procs[1:])):
+        source_relationships = [rel.name for rel in source.component.relationships]
+        target_relationships = [rel.name for rel in target.component.relationships]
+
         nipyapi.canvas.create_connection(
             source=source,
             target=target,
-            relationships = ['success'] if idx!=(len(procs)-2) else ['success','failure']
+            relationships = source_relationships
         )
 
     return procs
@@ -160,7 +168,7 @@ def main():
     root_pg    = nipyapi.canvas.get_process_group(root_pg_id, 'id')
 
     # create New Process Group
-    test_pg     = nipyapi.canvas.create_process_group(root_pg, 'test_process_group', (200, 200), 'this is a test')
+    test_pg     = nipyapi.canvas.create_process_group(root_pg, 'flow2', (700, 200), 'create entities, and update')
 
     # create flow
     procs_create_entities = createflow(test_pg, CREATE_ENTITIES_PROCESSOR_INFOS)

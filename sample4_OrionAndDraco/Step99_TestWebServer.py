@@ -10,6 +10,7 @@ config_ini = configparser.ConfigParser()
 config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
 
 class HTTPHandler(BaseHTTPRequestHandler):
+    counter = 0
     def do_GET(self):
         ###############################################################################################
         # RX HTTP request data
@@ -23,6 +24,14 @@ class HTTPHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-Type', 'application/json')
         self.end_headers()
+
+        body = {
+            "temperature": random.randint(50, 100),
+            "humidity"   : random.randint(50, 100)
+        }
+        print(body)
+        self.wfile.write( json.dumps(body).encode('utf-8') )
+
 
     def do_POST(self):
         ###############################################################################################
