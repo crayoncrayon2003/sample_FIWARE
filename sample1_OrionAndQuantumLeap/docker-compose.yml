@@ -44,8 +44,6 @@ services:
   # QuantumLeap
   quantumleap:
     image: orchestracities/quantumleap:1.0.0
-    labels:
-      org.fiware: 'tutorial'
     hostname: quantumleap
     container_name: fiware-quantumleap
     expose:
@@ -74,6 +72,8 @@ services:
   # Timescale(PostgreSQL) for QuantumLeap
   timescale:
     image: timescale/timescaledb-postgis:2.2.1-pg13
+    hostname: timescale
+    container_name: timescale
     expose:
       - "5432"
     ports:
@@ -82,20 +82,25 @@ services:
       - fiware-network
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust # PostgreSQL without Authenticattion
-      - POSTGRES_USER=quantumleap       # PostgreSQL root user
+      #- POSTGRES_USER=quantumleap      # PostgreSQL root user(The tutorial settings this value.)
+      - POSTGRES_USER=postgres          # PostgreSQL root user(But,quantumleap-pg-init accsess role is postgres)
       - POSTGRES_PASSWORD=*             # PostgreSQL root user pass
       - TZ=Asia/Tokyo
 
   # DB Setup for Timescale(PostgreSQL)
   quantumleap-db-setup:
     image: orchestracities/quantumleap-pg-init
-    depends_on:
-      - timescale
+    networks:
+      - fiware-network
     environment:
       - QL_DB_PASS=*
       - QL_DB_INIT_DIR=/ql-db-init
       - PG_HOST=timescale
+      - PG_USER=quantumleap
       - PG_PASS=*
+      - PG_DB=quantumleap
+    depends_on:
+      - timescale
 
 networks:
   fiware-network:

@@ -18,7 +18,6 @@ TYPE = "Product"
 def getProduct():
     fiware = FiwareAPI(ORION,SERVICE,SERVICEPATH)
 
-    # ボディ作成
     query = {'type' : TYPE}
     urn = URN
     [rsp, body] = fiware.getEntities(query=query, urn=urn)
@@ -27,7 +26,7 @@ def getProduct():
 
 
 def main():
-    print("最新データを保持するORIONの商品データを取得します")
+    print("Retrieve values from the web server via orion")
     getProduct()
 
 
