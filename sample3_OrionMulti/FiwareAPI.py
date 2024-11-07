@@ -46,7 +46,7 @@ class FiwareAPI():
         }
 
         for name, method in __METHODS_TABLE.items():
-            # Decorate method
+            # setting decorator to method
             decorated_method = self.__httpReq(method)
             # setting method to class
             setattr(self.__class__, name, decorated_method)
