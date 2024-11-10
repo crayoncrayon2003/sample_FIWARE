@@ -2,11 +2,8 @@ import json
 import requests
 
 class FiwareAPI():
-    def __init__(self, baseURL=None,Service=None,ServicePath=None,Type=None):
-        if( baseURL==None):
-            self.baseURL = 'http://0.0.0.0:1026'
-        else:
-            self.baseURL = baseURL
+    def __init__(self, baseURL,Service,ServicePath):
+        self.baseURL = baseURL
 
         __HEADERS={
             'Fiware-Service'    : Service,
