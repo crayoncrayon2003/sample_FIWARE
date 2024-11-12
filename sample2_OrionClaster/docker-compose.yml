@@ -5,8 +5,10 @@ services:
     image: quay.io/fiware/orion:3.11.0
     hostname: orion1
     container_name: fiware-orion1
+    restart: "on-failure"
     depends_on:
-      - mongo-db1
+      mongo-db1:
+        condition: service_healthy
     expose:
       - "1026"
     ports:
@@ -25,8 +27,10 @@ services:
     image: quay.io/fiware/orion:3.11.0
     hostname: orion2
     container_name: fiware-orion2
+    restart: "on-failure"
     depends_on:
-      - mongo-db1
+      mongo-db1:
+        condition: service_healthy
     expose:
       - "1027"
     ports:
@@ -68,12 +72,13 @@ services:
       org.fiware: 'tutorial'
     hostname: quantumleap
     container_name: fiware-quantumleap
+    depends_on:
+      timescale:
+        condition: service_healthy
     expose:
       - "8668"
     ports:
       - "8668:8668"
-    depends_on:
-      - timescale
     networks:
       - fiware-network
     environment:
@@ -102,20 +107,30 @@ services:
       - fiware-network
     environment:
       - POSTGRES_HOST_AUTH_METHOD=trust # PostgreSQL without Authenticattion
-      - POSTGRES_USER=quantumleap       # PostgreSQL root user
-      - POSTGRES_PASSWORD=*             # PostgreSQL root user pass
+      #- POSTGRES_USER=quantumleap      # PostgreSQL root user(The tutorial settings this value.)
+      - POSTGRES_USER=postgres          # PostgreSQL root user(But,quantumleap-pg-init accsess role is postgres)
       - TZ=Asia/Tokyo
+    healthcheck:
+      test: nc -z localhost 5432 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
   # DB Setup for Timescale(PostgreSQL)
   quantumleap-db-setup:
     image: orchestracities/quantumleap-pg-init
     depends_on:
-      - timescale
+      timescale:
+        condition: service_healthy
+    networks:
+      - fiware-network
     environment:
       - QL_DB_PASS=*
       - QL_DB_INIT_DIR=/ql-db-init
       - PG_HOST=timescale
+      - PG_USER=quantumleap
       - PG_PASS=*
+      - PG_DB=quantumleap
 
 networks:
   fiware-network:
