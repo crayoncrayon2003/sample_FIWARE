@@ -5,8 +5,10 @@ services:
     image: quay.io/fiware/orion:3.11.0
     hostname: orion1
     container_name: fiware-orion1
+    restart: "on-failure"
     depends_on:
-      - mongo-db1
+      mongo-db1:
+        condition: service_healthy
     expose:
       - "1026"
     ports:
