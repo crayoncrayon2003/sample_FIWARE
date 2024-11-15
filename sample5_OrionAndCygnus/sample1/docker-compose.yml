@@ -1,0 +1,115 @@
+version: "3.8"
+services:
+  # Orion is an NGSI-v2 context broker
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: fiware-orion1
+    restart: "on-failure"
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://orion1:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./data/mongo-db1:/data
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Cygnus agent
+  cygnus:
+    image: fiware/cygnus-ngsi:3.13.0
+    hostname: cygnus
+    container_name: cygnus
+    restart: on-failure
+    depends_on:
+      cygnus-mysql:
+        condition: service_healthy
+    expose:
+      - 5050
+      - 5080
+    ports:
+      - "5050:5050"
+      - "5080:5080"
+    networks:
+      - fiware-network
+    environment:
+      - CYGNUS_MYSQL_HOST=cygnus-mysql
+      - CYGNUS_MYSQL_PORT=3306
+      - CYGNUS_MYSQL_USER=root
+      - CYGNUS_MYSQL_PASS=pass
+      - CYGNUS_SERVICE_PORT=5050
+      - CYGNUS_API_PORT=5080
+      - CYGNUS_LOG_LEVEL=DEBUG
+    healthcheck:
+      test: nc -z localhost 5050 || exit 1"
+      start_period: 10s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    command: /cygnus-entrypoint.sh
+    volumes:
+      - ./config/cygnus/:/opt/apache-flume/conf/
+
+  # orion -> cygnus -> mysql
+  cygnus-mysql:
+    image: mysql:9
+    hostname: cygnus-mysql
+    container_name: cygnus-mysql
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    networks:
+      - fiware-network
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p$MYSQL_ROOT_PASSWORD"]
+      start_period: 10s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - ./data/cygnus-mysql:/var/lib/mysql
+
+networks:
+  fiware-network:
+    name: fiware-network
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  mongo-db1:
+  cygnus:
+  cygnus-mysql:
+  cygnus-mongo:
+  cygnus-postgres:
