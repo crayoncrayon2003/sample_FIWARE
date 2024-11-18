@@ -44,9 +44,9 @@ DASHBOARD -> DEFAULT, input following info
 * Protocols : http          (delete https)
 
 ### exec cliant request
-'''
+```
 python Step01_sample1.py
-'''
+```
 
 ## Sample2 : api request(GET/POST) to orion from client via kong
 ### make service (kong to orion)
@@ -71,9 +71,9 @@ python Step01_sample1.py
 * Protocols : http          (delete https)
 
 ### exec cliant request
-'''
+```
 python Step02_sample2.py
-'''
+```
 
 ## Sample3 : api request to orion from client via kong with API Key
 ### make service (kong to orion)
@@ -130,9 +130,9 @@ python Step02_sample2.py
 * run on preflight  : YES
 
 ### exec cliant request
-'''
+```
 python Step03_sample3.py
-'''
+```
 
 
 # down
