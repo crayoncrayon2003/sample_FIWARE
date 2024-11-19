@@ -1,0 +1,14 @@
+# sample-js:
+#   filter: rjsmin
+#   output: ckanext-sample/%(version)s-sample.js
+#   contents:
+#     - js/sample.js
+#   extra:
+#     preload:
+#       - base/main
+
+# sample-css:
+#   filter: cssrewrite
+#   output: ckanext-sample/%(version)s-sample.css
+#   contents:
+#     - css/sample.css

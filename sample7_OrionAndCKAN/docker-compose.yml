@@ -1,0 +1,150 @@
+version: "3"
+
+services:
+  # Orion is an NGSI-v2 context broker
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: fiware-orion1
+    restart: "on-failure"
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://localhost:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./data/mongo-db1:/data
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # CKAN is data catalog
+  ckan:
+    build:
+      context: ckan/
+      dockerfile: Dockerfile
+      args:
+        - TZ=${TZ}
+    container_name: ckan
+    hostname: ckan
+    restart: unless-stopped
+    depends_on:
+      - datapusher
+      - db
+      - solr
+      - redis
+    expose:
+      - "5000"
+    ports:
+      - "0.0.0.0:5000:5000"
+    networks:
+      - fiware-network
+    env_file:
+      - .env
+    volumes:
+      - ./src:/srv/app/src_extensions
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:5000"]
+
+  # datapusher for CKAN
+  datapusher:
+    image: ckan/ckan-base-datapusher:0.0.20
+    container_name: datapusher
+    hostname: datapusher
+    restart: unless-stopped
+    expose:
+      - "8800"
+    ports:
+      - "8800:8800"
+    networks:
+      - fiware-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8800"]
+
+  # postgresql for CKAN
+  db:
+    build:
+      context: postgresql/
+    container_name: postgresql
+    hostname: postgresql
+    restart: unless-stopped
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - fiware-network
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - CKAN_DB_USER
+      - CKAN_DB_PASSWORD
+      - CKAN_DB
+      - DATASTORE_READONLY_USER
+      - DATASTORE_READONLY_PASSWORD
+      - DATASTORE_DB
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}", "-d", "${POSTGRES_DB}"]
+
+  # solr for CKAN
+  solr:
+    image: ckan/ckan-solr:2.10-solr9
+    container_name: solr
+    hostname: solr
+    restart: unless-stopped
+    expose:
+      - "8983"
+    ports:
+      - "8983:8983"
+    networks:
+      - fiware-network
+    healthcheck:
+      test: ["CMD", "wget", "-qO", "/dev/null", "http://localhost:8983/solr/"]
+
+  # redis for CKAN
+  redis:
+    image: redis:6
+    container_name: redis
+    hostname: redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    ports:
+      - "6379:6379"
+    networks:
+      - fiware-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-e", "QUIT"]
+
+networks:
+  fiware-network:
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
