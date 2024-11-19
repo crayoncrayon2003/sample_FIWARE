@@ -1,1 +1,0 @@
-mkdir -p ./data ./data/ckan ./data/pg ./data/solr
