@@ -6,7 +6,7 @@ services:
     image: quay.io/fiware/orion:3.11.0
     hostname: orion1
     container_name: fiware-orion1
-    restart: "on-failure"
+    restart: on-failure
     depends_on:
       mongo-db1:
         condition: service_healthy
@@ -35,14 +35,42 @@ services:
       - "27017:27017"
     networks:
       - fiware-network
-    volumes:
-      - ./data/mongo-db1:/data
     healthcheck:
       test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
       interval: 1m
       timeout: 10s
       retries: 3
       start_period: 5s
+
+
+  # Cygnus agent
+  cygnus:
+    image: fiware/cygnus-ngsi:3.13.0
+    hostname: cygnus
+    container_name: cygnus
+    restart: on-failure
+    expose:
+      - 5050
+      - 5080
+    ports:
+      - "5050:5050"
+      - "5080:5080"
+    networks:
+      - fiware-network
+    environment:
+      - CYGNUS_SKIP_CONF_GENERATION=true
+      - CYGNUS_SERVICE_PORT=5050
+      - CYGNUS_API_PORT=5080
+      - CYGNUS_LOG_LEVEL=DEBUG
+    healthcheck:
+      test: nc -z localhost 5050 || exit 1"
+      start_period: 10s
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    command: /cygnus-entrypoint.sh
+    volumes:
+      - ./cygnus/:/opt/apache-flume/conf/
 
   # CKAN is data catalog
   ckan:
@@ -60,6 +88,7 @@ services:
       - solr
       - redis
     expose:
+      - "80"
       - "5000"
     ports:
       - "0.0.0.0:5000:5000"

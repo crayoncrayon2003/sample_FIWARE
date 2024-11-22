@@ -18,8 +18,11 @@ Username or Email   : ckan_admin
 Password            : test1234
 
 ## Create organizations
-1. Click "organizations"
-2. Click "Add organizations"
+1. Click on "organizations" at the Top of screen.
+   "organizations" is in the next two locations.
+   * Top of screen
+   * Center of screen
+2. Click on "Add organizations"
 3. Input following
 Name        : sample-organizations
 Description : (blank)
