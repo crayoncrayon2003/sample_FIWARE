@@ -33,7 +33,7 @@ def setSubscriptions():
         "subject": {
             "entities": [
                 {
-                    "id": URN,
+                    "idPattern": ".*",
                     "type": TYPE
                 }
             ],
@@ -46,10 +46,10 @@ def setSubscriptions():
                 "url": CYGNUS_ORION+"/notify"
             },
             "attrs": [ "temperature", "humidity" ],
-            "attrsFormat": "legacy"
+            "metadata": ["dateCreated", "dateModified"]
         },
-        "expires": "2025-12-31T00:00:00.000Z",
-        "throttling": 1
+        "expires": "2050-12-31T00:00:00.000Z",
+        "throttling": 5
     }
     [rsp, body] = fiware.postSubscriptions(body=body)
     fiware.printResponse(rsp)

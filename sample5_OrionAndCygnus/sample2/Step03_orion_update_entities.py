@@ -60,7 +60,7 @@ def updateSensorHumidity(humidity):
 def main():
     temperature = 3
     humidity    = 4
-    for idx in range(0, 1, 1):
+    for idx in range(0, 1, 10):
         temperature+=1
         humidity+=1
         print("update sensor values (temperature) for orion")
