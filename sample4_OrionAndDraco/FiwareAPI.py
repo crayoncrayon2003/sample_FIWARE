@@ -22,6 +22,7 @@ class FiwareAPI():
             "postEntities"                          : lambda self: ["/v2/entities/",                            "post",    {**__HEADERS, **{'Content-Type':'application/json'}} ],
             "putEntities"                           : lambda self: ["/v2/entities/",                            "put",     {**__HEADERS, **{'Content-Type':'text/plain'      }} ],
             "patchEntities"                         : lambda self: ["/v2/entities/",                            "patch",   {**__HEADERS, **{'Content-Type':'application/json'}} ],
+            "deleteEntities"                        : lambda self: ["/v2/entities/",                            "delete",  __HEADERS, ],
             "getTypes"                              : lambda self: ["/v2/types/",                               "get",     {**__HEADERS, **{'Accept'      :'application/json'}} ],
             "getSubscriptions"                      : lambda self: ["/v2/subscriptions/",                       "get",     {**__HEADERS, **{'Accept'      :'application/json'}} ],
             "postSubscriptions"                     : lambda self: ["/v2/subscriptions/",                       "post",    {**__HEADERS, **{'Content-Type':'application/json'}} ],
@@ -56,6 +57,13 @@ class FiwareAPI():
         print("REST API Response Body : ")
         try:
             print(json.dumps(json.loads(body), indent=2))
+        except Exception as e:
+            print("empty")
+
+    def saveJson(self,path, body):
+        try:
+            with open(path, 'w') as f:
+                json.dump(body, f, indent=2)
         except Exception as e:
             print("empty")
 
