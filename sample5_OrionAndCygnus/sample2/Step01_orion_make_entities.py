@@ -22,15 +22,15 @@ def makeSensor():
         "type": TYPE,
         "name": {
             "type": "Text",
-            "value": TYPE,
+            "value": TYPE
         },
         "temperature": {
             "type": "Integer",
-            "value": 20,
+            "value": 20
         },
         "humidity": {
             "type": "Integer",
-            "value": 20,
+            "value": 20
         }
     }
     [rsp, body] = fiware.postEntities(body=body)

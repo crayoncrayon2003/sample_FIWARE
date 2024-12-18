@@ -60,7 +60,7 @@ def updateSensorHumidity(humidity):
 def main():
     temperature = 3
     humidity    = 4
-    for idx in range(0, 1, 10):
+    for idx in range(20):
         temperature+=1
         humidity+=1
         print("update sensor values (temperature) for orion")
@@ -72,4 +72,5 @@ def main():
 
 
 if __name__=='__main__':
+    print('\033[31m{0}\033[0m'.format("Keep it running and proceed to the next step."))
     main()

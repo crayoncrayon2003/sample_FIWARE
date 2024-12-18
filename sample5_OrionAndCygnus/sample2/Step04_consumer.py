@@ -1,28 +1,38 @@
-import os
-import configparser
-from kafka import KafkaConsumer, TopicPartition
+import sys
+import six
+import json
+import re
+# Compatibility with python3.12
+if sys.version_info >= (3, 12, 0):
+    sys.modules['kafka.vendor.six.moves'] = six.moves
+from kafka import KafkaConsumer
 
-config_ini = configparser.ConfigParser()
-config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
+# kafka setting
+TOPIC_NAME = "text_topic"
+PARTITIONS = 1
+REPLICATION = 1
 
-SERVERS = '{}:{}'.format(config_ini['DEFAULT']['HOST_IP'],'9092')
+def replace_last_occurrence(input, target, replacement):
+    pattern = re.compile(re.escape(target) + r'(?!.*' + re.escape(target) + ')')
+    return pattern.sub(replacement, input)
 
 def main():
+    # Create Kafka KafkaConsumer
     consumer = KafkaConsumer(
-        bootstrap_servers=SERVERS,
+        TOPIC_NAME,
+        bootstrap_servers="localhost:9092",
+        auto_offset_reset="earliest",
         enable_auto_commit=True,
-        group_id='my_group',
+        group_id="my-group",
         value_deserializer=lambda x: x.decode('utf-8')
     )
-    topic = 'my_topic'
-    partition = 0
-    topic_partition = TopicPartition(topic, partition)
-    consumer.assign([topic_partition])
-    consumer.seek_to_beginning(topic_partition)
 
+    # Received topic
     for message in consumer:
-        print(f"Received message: {message.value}")
+        msg = message.value
+        # Remove delimiter
+        msg = replace_last_occurrence(msg, 'xffff', '')
+        print(json.dumps(json.loads(msg), indent=2))
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
