@@ -1,67 +1,67 @@
 <mxfile host="65bd71144e">
     <diagram id="EYnul3M8fKUqPL1PLpRS" name="ページ1">
-        <mxGraphModel dx="1228" dy="707" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" math="0" shadow="0">
+        <mxGraphModel dx="1618" dy="601" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2336" pageHeight="1654" background="#ffffff" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="4" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;&lt;span style=&quot;color: #569cd6;&quot;&gt;cygnus&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="4" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;&lt;span style=&quot;&quot;&gt;cygnus&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="280" y="200" width="650" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;source&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="4">
+                <mxCell id="3" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;source&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" vertex="1">
                     <mxGeometry x="20" y="80" width="200" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;CustomSourceRest&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="3">
+                <mxCell id="9" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;CustomSourceRest&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="3" vertex="1">
                     <mxGeometry x="20" y="130" width="160" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="10" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;CustomSourceConst&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="3">
+                <mxCell id="10" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;CustomSourceConst&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="3" vertex="1">
                     <mxGeometry x="20" y="50" width="160" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;channel&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=0;direction=south;" vertex="1" parent="4">
+                <mxCell id="7" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;channel&lt;/div&gt;" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;rotation=0;direction=south;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" vertex="1">
                     <mxGeometry x="260" y="80" width="130" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" value="sink" style="swimlane;whiteSpace=wrap;html=1;startSize=23;" vertex="1" parent="4">
+                <mxCell id="14" value="sink" style="swimlane;whiteSpace=wrap;html=1;startSize=23;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" vertex="1">
                     <mxGeometry x="430" y="80" width="200" height="200" as="geometry"/>
                 </mxCell>
-                <mxCell id="15" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;NGSIOrionCustomSink&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="14">
+                <mxCell id="15" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-size: 14px; line-height: 19px;&quot;&gt;NGSIOrionCustomSink&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="14" vertex="1">
                     <mxGeometry x="20" y="76" width="160" height="50" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="4" source="10">
+                <mxCell id="17" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" source="10" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="520" y="240" as="sourcePoint"/>
                         <mxPoint x="260" y="155" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="18" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="4" source="9">
+                <mxCell id="18" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" source="9" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="210" y="165" as="sourcePoint"/>
                         <mxPoint x="260" y="235" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="19" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="4" source="7" target="15">
+                <mxCell id="19" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="4" source="7" target="15" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="210" y="165" as="sourcePoint"/>
                         <mxPoint x="270" y="165" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="11" value="&lt;div style=&quot;color: rgb(212, 212, 212); background-color: rgb(30, 30, 30); font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;&lt;span style=&quot;color: #569cd6;&quot;&gt;orion&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="11" value="&lt;div style=&quot;font-family: Consolas, &amp;quot;Courier New&amp;quot;, monospace; font-weight: normal; font-size: 14px; line-height: 19px;&quot;&gt;&lt;span style=&quot;&quot;&gt;orion&lt;/span&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;fontColor=#000000;labelBackgroundColor=#FFFFFF;fillColor=none;strokeColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="980" y="200" width="120" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="20" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="15" target="11">
+                <mxCell id="20" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="1" source="15" target="11" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="680" y="390.52" as="sourcePoint"/>
                         <mxPoint x="740" y="391" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="21" value="&lt;div style=&quot;background-color: rgb(30, 30, 30); line-height: 19px;&quot;&gt;&lt;font face=&quot;Consolas, Courier New, monospace&quot; color=&quot;#569cd6&quot;&gt;&lt;span style=&quot;font-size: 14px; font-weight: 400;&quot;&gt;webserver&lt;/span&gt;&lt;/font&gt;&lt;br&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="21" value="&lt;div style=&quot;line-height: 19px;&quot;&gt;&lt;font face=&quot;Consolas, Courier New, monospace&quot;&gt;&lt;span style=&quot;font-size: 14px; font-weight: 400;&quot;&gt;webserver&lt;/span&gt;&lt;/font&gt;&lt;br&gt;&lt;/div&gt;" style="swimlane;whiteSpace=wrap;html=1;fontColor=#000000;fillColor=none;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="1" vertex="1">
                     <mxGeometry x="80" y="200" width="120" height="360" as="geometry"/>
                 </mxCell>
-                <mxCell id="22" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="9">
+                <mxCell id="22" value="" style="endArrow=classic;html=1;exitX=0;exitY=0.25;exitDx=0;exitDy=0;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="1" source="9" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="490" y="445" as="sourcePoint"/>
                         <mxPoint x="200" y="423" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="23" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;" edge="1" parent="1" target="9">
+                <mxCell id="23" value="" style="endArrow=classic;html=1;entryX=0;entryY=0.75;entryDx=0;entryDy=0;dashed=1;dashPattern=12 12;fontColor=#000000;labelBackgroundColor=#FFFFFF;strokeColor=#000000;" parent="1" target="9" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="200" y="448" as="sourcePoint"/>
                         <mxPoint x="210" y="433" as="targetPoint"/>

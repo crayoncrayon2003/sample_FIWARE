@@ -1,5 +1,5 @@
 # 0. Abstract
-[image](https://github.com/crayoncrayon2003/sample_FIWARE/tree/main/sample5_OrionAndCygnus/sample3_RESTCygnusOrion/figure.png)
+![image](https://github.com/crayoncrayon2003/sample_FIWARE/blob/main/sample5_OrionAndCygnus/sample3_RESTCygnusOrion/figure.png)
 
 # 1.Preparation
 
@@ -12,8 +12,10 @@ mvn clean package
 ```
 
 ### 1.1.2. Copy JAR files into cygnus
+```
 From : flume-custom-source-const/project/target/flume-custom-source-const-0.0.1-SNAPSHOT.jar
 To   : cygnus/lib/flume-custom-source-const-0.0.1-SNAPSHOT.jar
+```
 
 ## 1.2. Sink
 
@@ -24,9 +26,10 @@ mvn clean package
 ```
 
 ### 1.2.2. Copy JAR files into cygnus
+```
 From : flume-custom-sink-orion/project/target/flume-custom-sinks-orion-0.0.1-SNAPSHOT.jar
 To   : cygnus/lib/flume-custom-sinks-orion-0.0.1-SNAPSHOT.jar
-
+```
 
 # 2. build and run
 ```
