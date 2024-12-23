@@ -12,7 +12,6 @@ import java.util.Random;
 public class CustomSourceConst extends AbstractSource implements Configurable, PollableSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomSourceConst.class);
     private Random random;
-
     @Override
     public void configure(Context context) {
         // load config
@@ -61,8 +60,6 @@ public class CustomSourceConst extends AbstractSource implements Configurable, P
         Status status = null;
 
         try {
-            Event event = new SimpleEvent();
-
             // create event data
             // ex.
             // {
@@ -107,10 +104,13 @@ public class CustomSourceConst extends AbstractSource implements Configurable, P
             json.put("humidity",    jsonHumidity);
 
             // set data to event
+            Event event = new SimpleEvent();
             event.setBody(json.toString().getBytes());
 
             // send event
             getChannelProcessor().processEvent(event);
+
+            Thread.sleep(3000L);
 
             status = Status.READY;
         } catch (ChannelFullException e) {

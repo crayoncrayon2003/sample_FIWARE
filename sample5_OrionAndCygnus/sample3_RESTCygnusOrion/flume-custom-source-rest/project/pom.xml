@@ -5,10 +5,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example.flume.custom.source</groupId>
-    <artifactId>flume-custom-source-const</artifactId>
+    <artifactId>flume-custom-source-rest</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>flume-custom-source-const</name>
+    <name>flume-custom-source-rest</name>
     <description>This project provides a custom source for Apache Flume.</description>
 
     <properties>

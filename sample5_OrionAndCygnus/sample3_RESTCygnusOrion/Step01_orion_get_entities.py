@@ -1,6 +1,7 @@
 import os
 import configparser
 from FiwareAPI import *
+import time
 
 config_ini = configparser.ConfigParser()
 config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
@@ -19,9 +20,10 @@ def getSensor():
 
     query = {'type' : TYPE}
     urn = URN
-    [rsp, body] = fiware.getEntities(query=query, urn=urn)
-    fiware.printResponse(rsp)
-    fiware.printJsonString(body)
+    while(True):
+        [_, body] = fiware.getEntities(query=query, urn=urn)
+        fiware.printJsonString(body)
+        time.sleep(1)
 
 def main():
     print("get sensor values (temperature and humidity) from orion")

@@ -4,20 +4,28 @@ import org.apache.flume.*;
 import org.apache.flume.conf.Configurable;
 import org.apache.flume.event.SimpleEvent;
 import org.apache.flume.source.AbstractSource;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
+
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
+
 import org.json.JSONObject;
-import java.util.Random;
+import java.io.IOException;
 
 public class CustomSourceRest extends AbstractSource implements Configurable, PollableSource {
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomSourceRest.class);
-    private Random random;
+    private String URL;
 
     @Override
     public void configure(Context context) {
-        // load config
+        // Load configuration
         LOGGER.debug("[CustomSourceRest][configure] start");
-        this.random = new Random();
+        URL = context.getString("url", "http://localhost:8080");
         LOGGER.debug("[CustomSourceRest][configure] end");
     }
 
@@ -35,23 +43,13 @@ public class CustomSourceRest extends AbstractSource implements Configurable, Po
         LOGGER.debug("[CustomSourceRest][stop] end");
     }
 
-
-    // first failure, the wait time is  2 seconds.(0+2)
-    // next  failure, the wait time is  4 seconds.(2+2)
-    // next  failure, the wait time is  6 seconds.(4+2)
-    // next  failure, the wait time is  8 seconds.(6+2)
-    // next  failure, the wait time is 10 seconds.(8+2)
-    // next  failure, the wait time is 10 seconds.(maximum) ...
-    // next  failure, the wait time is 10 seconds.(maximum) ...
-    @Override public long getBackOffSleepIncrement() {
-        // This method determines the amount of time (milliseconds)
-        // to increase the wait time between each retry.
-        // In this example, it is set to 2,000 milliseconds (2 seconds).
+    @Override
+    public long getBackOffSleepIncrement() {
         return 2000L;
     }
-    @Override public long getMaxBackOffSleepInterval() {
-        // This method sets the maximum amount of time (in milliseconds) to wait between retries.
-        // In this example, it is set to 10,000 milliseconds (10 seconds).
+
+    @Override
+    public long getMaxBackOffSleepInterval() {
         return 10000L;
     }
 
@@ -61,31 +59,14 @@ public class CustomSourceRest extends AbstractSource implements Configurable, Po
         Status status = null;
 
         try {
-            Event event = new SimpleEvent();
+            // get data for Webserver
+            String response = getWebServerData();
+            // Parse the response
+            JSONObject jsonResponse = new JSONObject(response);
+            int temperature = jsonResponse.getInt("temperature");
+            int humidity = jsonResponse.getInt("humidity");
 
             // create event data
-            // ex.
-            // {
-            //     "name": {
-            //         "type": "Text",
-            //         "value": "This is CustomSourceConst",
-            //         "metadata": {}
-            //     },
-            //     "temperature": {
-            //         "type": "Integer",
-            //         "value": 42,  // example value
-            //         "metadata": {}
-            //     },
-            //     "humidity": {
-            //         "type": "Integer",
-            //         "value": 73,  // example value
-            //         "metadata": {}
-            //     }
-            // }
-
-            int temperature = this.random.nextInt(101);
-            int humidity    = this.random.nextInt(101);
-
             JSONObject jsonName = new JSONObject();
             jsonName.put("type", "Text");
             jsonName.put("value", "This is CustomSourceRest");
@@ -107,10 +88,13 @@ public class CustomSourceRest extends AbstractSource implements Configurable, Po
             json.put("humidity",    jsonHumidity);
 
             // set data to event
+            Event event = new SimpleEvent();
             event.setBody(json.toString().getBytes());
 
             // send event
             getChannelProcessor().processEvent(event);
+
+            Thread.sleep(5000L);
 
             status = Status.READY;
         } catch (ChannelFullException e) {
@@ -123,4 +107,19 @@ public class CustomSourceRest extends AbstractSource implements Configurable, Po
         LOGGER.debug("[CustomSourceRest][process] end");
         return status;
     }
+
+    private String getWebServerData() throws IOException {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet(URL);
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                int statusCode = response.getStatusLine().getStatusCode();
+                if (statusCode == 200) { // Success
+                    return EntityUtils.toString(response.getEntity());
+                } else {
+                    throw new IOException("Failed to fetch data from API, Response code: " + statusCode);
+                }
+            }
+        }
+    }
+
 }
