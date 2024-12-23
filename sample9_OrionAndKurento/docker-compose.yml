@@ -1,0 +1,92 @@
+version: "3.8"
+services:
+  # Orion is an NGSI-v2 context broker
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: fiware-orion1
+    restart: on-failure
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    # environment:
+    # - ORION_DBHOST=mongo-db1
+    # - ORION_LOGLEVEL=DEBUG
+    # - ORION_NOCACHE=true
+    healthcheck:
+      test: curl --fail -s http://orion1:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./data/mongo-db1:/data
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      start_period: 10s
+      interval: 10m
+      timeout: 5s
+      retries: 3
+
+  kurento:
+    image: fiware/stream-oriented-kurento
+    hostname: kurento
+    container_name: fiware-kurento
+    expose:
+        - "8888"
+    ports:
+        - 8888:8888
+    networks:
+      - fiware-network
+
+  kurento-examples:
+    image: fiware/kurento-examples
+    hostname: kurento-examples
+    container_name: kurento-examples
+    depends_on:
+        - kurento
+    build:
+        context: ../kurento-examples
+        dockerfile: Dockerfile
+    ports:
+        - 8443:8443
+    networks:
+        - default
+    environment:
+        - "MEDIA_SERVER_HOST=kurento"
+        - "MEDIA_SERVER_PORT=8888"
+        - "APP_SERVER_HOST=kurento-examples"
+        - "APP_SERVER_PORT=8443"
+        - "TUTORIAL_NAME=${TUTORIAL_NAME}"
+
+networks:
+  fiware-network:
+    name: fiware-network
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  mongo-db1:
+  cygnus:
+  kafka:
+

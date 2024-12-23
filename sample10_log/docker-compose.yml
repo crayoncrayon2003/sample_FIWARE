@@ -1,0 +1,161 @@
+version: "3.8"
+services:
+  # Orion is an NGSI-v2 context broker
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: fiware-orion1
+    #restart: "on-failure"
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    # environment:
+    #   - ORION_MONGO_URI=mongodb://mongo-db1
+    #   - ORION_MONGO_PASSWORD=
+    #   #- ORION_MONGO_DB=mongo-db1
+    #   - ORION_LOG_DIR=/tmp
+    #   - ORION_LOG_LEVEL=DEBUG
+    volumes:
+      - ./logs/orion:/tmp/
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://orion1:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  # MongoDB for Orion
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./logs/mongo1:/var/log/mongo
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  # QuantumLeap
+  quantumleap:
+    image: orchestracities/quantumleap:1.0.0
+    hostname: quantumleap
+    container_name: fiware-quantumleap
+    depends_on:
+      timescale:
+        condition: service_healthy
+    expose:
+      - "8668"
+    ports:
+      - "8668:8668"
+    networks:
+      - fiware-network
+    volumes:
+      - ./logs/quantumleap:/var/log/quantumleap
+    environment:
+      - QL_DEFAULT_DB=timescale          # Backend "timescale" or "crate"
+      - POSTGRES_HOST=timescale          # PostgreSQL host
+      - POSTGRES_PORT=5432               # PostgreSQL port
+      - POSTGRES_HOST_AUTH_METHOD=trust  # PostgreSQL without Authenticattion
+      - POSTGRES_USER=quantumleap        # PostgreSQL root user
+      - POSTGRES_PASSWORD=*              # PostgreSQL root user pass
+      - POSTGRES_DB_NAME=quantumleap     # PostgreSQL default db
+      - POSTGRES_DB_USER=quantumleap     # PostgreSQL default db user
+      - POSTGRES_DB_PASS=*               # PostgreSQL default db user pass
+      - POSTGRES_USE_SSL=False
+      - LOGLEVEL=DEBUG
+    healthcheck:
+      test: curl --fail -s http://quantumleap:8668/version || exit 1
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  # Timescale(PostgreSQL) for QuantumLeap
+  timescale:
+    image: timescale/timescaledb-postgis:2.2.1-pg13
+    hostname: timescale
+    container_name: timescale
+    expose:
+      - "5432"
+    ports:
+      - "5432:5432"
+    networks:
+      - fiware-network
+    volumes:
+      - ./logs/timescale:/var/log/timescale
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust # PostgreSQL without Authenticattion
+      #- POSTGRES_USER=quantumleap      # PostgreSQL root user(The tutorial settings this value.)
+      - POSTGRES_USER=postgres          # PostgreSQL root user(But,quantumleap-pg-init accsess role is postgres)
+      - POSTGRES_PASSWORD=*             # PostgreSQL root user pass
+      - TZ=Asia/Tokyo
+    healthcheck:
+      test: nc -z localhost 5432 || exit -1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+  # DB Setup for Timescale(PostgreSQL)
+  quantumleap-db-setup:
+    image: orchestracities/quantumleap-pg-init
+    depends_on:
+      timescale:
+        condition: service_healthy
+    networks:
+      - fiware-network
+    volumes:
+      - ./logs/quantumleap-db-setup:/var/log/quantumleap-db-setup
+    environment:
+      - QL_DB_PASS=*
+      - QL_DB_INIT_DIR=/ql-db-init
+      - PG_HOST=timescale
+      - PG_USER=quantumleap
+      - PG_PASS=*
+      - PG_DB=quantumleap
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+networks:
+  fiware-network:
+    name: fiware-network
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  logs:
