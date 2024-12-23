@@ -32,8 +32,6 @@ From : flume-custom-source-rest/project/target/flume-custom-source-rest-0.0.1-SN
 To   : cygnus/lib/flume-custom-source-rest-0.0.1-SNAPSHOT.jar
 ```
 
-
-
 ## 1.3. Sink
 
 ### 1.3.1 Make Sink Jar
