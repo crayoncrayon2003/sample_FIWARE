@@ -1,1 +1,0 @@
-mkdir -p ./logs/orion ./logs/mongo1 ./logs/quantumleap ./logs/timescale ./logs/quantumleap-db-setup
