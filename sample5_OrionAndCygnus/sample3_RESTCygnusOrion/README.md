@@ -3,7 +3,7 @@
 
 # 1.Preparation
 
-## 1.1. Source
+## 1.1. Source1
 
 ### 1.1.1. Make source Jar
 ```
@@ -17,15 +17,21 @@ From : flume-custom-source-const/project/target/flume-custom-source-const-0.0.1-
 To   : cygnus/lib/flume-custom-source-const-0.0.1-SNAPSHOT.jar
 ```
 
-## 1.2. Sink
 
-### 1.2.1 Make Sink Jar
+## 1.2. Source2
+Under development
+
+
+
+## 1.3. Sink
+
+### 1.3.1 Make Sink Jar
 ```
 cd flume-custom-sink-orion/project
 mvn clean package
 ```
 
-### 1.2.2. Copy JAR files into cygnus
+### 1.3.2. Copy JAR files into cygnus
 ```
 From : flume-custom-sink-orion/project/target/flume-custom-sinks-orion-0.0.1-SNAPSHOT.jar
 To   : cygnus/lib/flume-custom-sinks-orion-0.0.1-SNAPSHOT.jar
