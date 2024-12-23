@@ -19,7 +19,18 @@ To   : cygnus/lib/flume-custom-source-const-0.0.1-SNAPSHOT.jar
 
 
 ## 1.2. Source2
-Under development
+
+### 1.2.1. Make source Jar
+```
+cd flume-custom-source-rest/project
+mvn clean package
+```
+
+### 1.1.2. Copy JAR files into cygnus
+```
+From : flume-custom-source-rest/project/target/flume-custom-source-rest-0.0.1-SNAPSHOT.jar
+To   : cygnus/lib/flume-custom-source-rest-0.0.1-SNAPSHOT.jar
+```
 
 
 
