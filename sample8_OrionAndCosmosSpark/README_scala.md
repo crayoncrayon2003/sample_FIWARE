@@ -23,8 +23,10 @@ mvn clean package
 ```
 
 ## Copy Jar
+```
 FROM : cosmos-custom-sparkapp/project/target/cosmos-custom-1.0-SNAPSHOT-jar-with-dependencies.jar
 TO   : spark-apps/cosmos-custom-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
 
 ## Run spark application
 ```
