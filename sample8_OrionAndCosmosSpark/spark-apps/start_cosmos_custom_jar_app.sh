@@ -1,0 +1,1 @@
+/opt/bitnami/spark/bin/spark-submit --class org.fiware.cosmos.custom.CustomSparkApp --master spark://172.19.1.4:7077 --deploy-mode client /opt/spark-apps/cosmos-custom-1.0-SNAPSHOT-jar-with-dependencies.jar --conf "spark.driver.extraJavaOptions=-Dlog4jspark.root.logger=DEBUG,console"
