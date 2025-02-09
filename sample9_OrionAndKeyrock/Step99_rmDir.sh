@@ -1,0 +1,1 @@
+sudo rm -R authzforce mongo-db mysql-db

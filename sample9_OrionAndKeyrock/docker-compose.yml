@@ -1,0 +1,147 @@
+version: "3.8"
+
+services:
+  # Orion Context Broker
+  orion:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion
+    container_name: fiware-orion
+    restart: "on-failure"
+    depends_on:
+      - mongo-db
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://orion:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion
+  mongo-db:
+    image: mongo:6.0
+    hostname: mongo-db
+    container_name: mongo-db
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./mongo-db:/data/db
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # Keyrock (OAuth 2.0 Identity Manager)
+  keyrock:
+    image: fiware/idm:7.8.1
+    container_name: keyrock
+    hostname: keyrock
+    networks:
+      fiware-network:
+        ipv4_address: 172.19.1.15
+    depends_on:
+      - mysql-db
+    expose:
+      - '3000'
+      - '443'
+    ports:
+      - '3000:3000'
+      - '443:443'
+    environment:
+      - DEBUG=idm:*
+      - IDM_DB_HOST=mysql-db
+      - IDM_HOST=http://keyrock:3000
+      - IDM_PORT=3000
+      - IDM_DB_PASS=secret
+      - IDM_DB_USER=root
+      - IDM_ADMIN_USER=admin
+      - IDM_ADMIN_EMAIL=admin@test.com
+      - IDM_ADMIN_PASS=1234
+
+  # MySQL for Keyrock
+  mysql-db:
+    image: mysql:5.7
+    hostname: mysql-db
+    container_name: mysql-db
+    restart: always
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks:
+      fiware-network:
+        ipv4_address: 172.19.1.16
+    environment:
+      - 'MYSQL_ROOT_PASSWORD=secret'
+      - 'MYSQL_ROOT_HOST=%'
+    volumes:
+      - ./mysql-db:/var/lib/mysql
+
+  # AuthZForce (XACML PDP)
+  authzforce:
+    image: fiware/authzforce-ce-server:release-8.1.0
+    hostname: authzforce
+    container_name: fiware-authzforce
+    restart: always
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+    networks:
+      - fiware-network
+    volumes:
+      - ./authzforce/:/var/lib/authzforce/domains
+
+  # Wilma PEP Proxy (Protects Orion using XACML)
+  wilma:
+    image: fiware/pep-proxy:7.8.1
+    hostname: wilma
+    container_name: fiware-wilma
+    networks:
+      - fiware-network
+    depends_on:
+      - keyrock
+      - authzforce
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    environment:
+      - "PEP_PROXY_DEBUG=false"
+      - "PEP_PROXY_APP_HOST=orion"
+      - "PEP_PROXY_APP_PORT=1026"
+      - "PEP_PROXY_IDM_HOST=keyrock"
+      - "PEP_PROXY_IDM_PORT=3000"
+      - PEP_PROXY_AUTH_ENABLED=true
+      - PEP_PROXY_HTTPS_ENABLED=false
+      - PEP_PROXY_IDM_SSL_ENABLED=false
+      - PEP_PROXY_AUTHZFORCE_ENABLED=true
+      - PEP_PROXY_AUTHZFORCE_HOST=authzforce
+      - PEP_PROXY_AUTHZFORCE_PORT=8080
+      - PEP_PROXY_USERNAME=admin@test.com
+      - PEP_PASSWORD=1234
+      - PEP_PROXY_MAGIC_KEY=1234
+
+networks:
+  fiware-network:
+    name: fiware-network
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  mongo-db:
+  mysql-db:
+  authzforce:

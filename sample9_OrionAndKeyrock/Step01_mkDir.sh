@@ -1,0 +1,1 @@
+mkdir -p authzforce mongo-db mysql-db

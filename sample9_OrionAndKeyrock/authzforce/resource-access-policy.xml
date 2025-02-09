@@ -1,0 +1,25 @@
+<Policy xmlns="urn:oasis:names:tc:xacml:2.0:policy:schema:os" PolicyId="example-policy" RuleCombiningAlgorithm="deny-overrides">
+  <!-- Target -->
+  <Target>
+    <AnyOf>
+      <AllOf>
+        <Match MatchId="urn:oasis:names:tc:xacml:1.0:function:resource-match">
+          <AttributeValue DataType="http://www.w3.org/2001/XMLSchema#string">urn:fiware:orion:context</AttributeValue>
+          <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:resource" AttributeId="urn:fiware:orion:resource" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+        </Match>
+      </AllOf>
+    </AnyOf>
+  </Target>
+
+  <!-- Rule -->
+  <Rule RuleId="allow-access" Effect="Permit">
+    <Condition>
+      <Apply FunctionId="urn:oasis:names:tc:xacml:1.0:function:time-interval">
+        <AttributeDesignator Category="urn:oasis:names:tc:xacml:3.0:attribute-category:subject" AttributeId="urn:fiware:orion:user" DataType="http://www.w3.org/2001/XMLSchema#string"/>
+      </Apply>
+    </Condition>
+  </Rule>
+
+  <!-- Default Deny -->
+  <Rule RuleId="deny-all" Effect="Deny"/>
+</Policy>
