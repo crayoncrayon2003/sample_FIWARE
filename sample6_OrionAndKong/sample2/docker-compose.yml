@@ -1,0 +1,201 @@
+version: "3.8"
+
+services:
+  # Orion is an NGSI-v2 context broker
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: orion1
+    restart: "on-failure"
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://localhost:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    networks:
+      - fiware-network
+    volumes:
+      - ./data/mongo-db1:/data
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # kong is API Gateway
+  kong-migrations:
+    image: "${KONG_DOCKER_TAG:-kong:latest}"
+    hostname: kong-migrations
+    container_name: kong-migrations
+    restart: on-failure
+    networks:
+      - fiware-network
+    depends_on:
+      - kong-db
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+      KONG_PG_HOST: kong-db
+      KONG_PG_USER: ${KONG_PG_USER:-kong}
+      KONG_PG_PASSWORD_FILE: /run/secrets/kong_postgres_password
+    secrets:
+      - kong_postgres_password
+    command: kong migrations bootstrap
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  kong-migrations-up:
+    image: "${KONG_DOCKER_TAG:-kong:latest}"
+    hostname: kong-migrations-up
+    container_name: kong-migrations-up
+    restart: on-failure
+    networks:
+      - fiware-network
+    depends_on:
+      - kong-db
+    environment:
+      KONG_DATABASE: postgres
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+      KONG_PG_HOST: kong-db
+      KONG_PG_USER: ${KONG_PG_USER:-kong}
+      KONG_PG_PASSWORD_FILE: /run/secrets/kong_postgres_password
+    secrets:
+      - kong_postgres_password
+    command: kong migrations up && kong migrations finish
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  kong:
+    image: "${KONG_DOCKER_TAG:-kong:latest}"
+    hostname: kong
+    container_name: kong
+    depends_on:
+      - kong-db
+      - orion1
+    ports:
+      - "8000:8000/tcp"
+      - "127.0.0.1:8001:8001/tcp"
+      - "8443:8443/tcp"
+      - "127.0.0.1:8444:8444/tcp"
+    networks:
+      - fiware-network
+    user: "${KONG_USER:-kong}"
+    environment:
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_PROXY_LISTEN: "${KONG_PROXY_LISTEN:-0.0.0.0:8000}"
+      KONG_ADMIN_LISTEN: "${KONG_ADMIN_LISTEN:-0.0.0.0:8001}"
+      KONG_CASSANDRA_CONTACT_POINTS: kong-db
+      KONG_DATABASE: postgres
+      KONG_PG_DATABASE: ${KONG_PG_DATABASE:-kong}
+      KONG_PG_HOST: kong-db
+      KONG_PG_USER: ${KONG_PG_USER:-kong}
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_PG_PASSWORD_FILE: /run/secrets/kong_postgres_password
+      KONG_PLUGINS: bundled,pre-function,post-function
+    secrets:
+      - kong_postgres_password
+    healthcheck:
+      test: ["CMD", "kong", "health"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  # postgres for kong
+  kong-db:
+    image: postgres:9.5
+    hostname: kong-db
+    container_name: kong-db
+    restart: on-failure
+    stdin_open: true
+    tty: true
+    networks:
+      - fiware-network
+    environment:
+      POSTGRES_DB: ${KONG_PG_DATABASE:-kong}
+      POSTGRES_USER: ${KONG_PG_USER:-kong}
+      POSTGRES_PASSWORD: "kong"
+    secrets:
+      - kong_postgres_password
+    volumes:
+      - ./data/kong_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "${KONG_PG_USER:-kong}"]
+      interval: 30s
+      timeout: 30s
+      retries: 3
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+  # konga is GUI for kong
+  konga:
+    image: pantsel/konga
+    hostname: konga
+    container_name: konga
+    restart: "on-failure"
+    depends_on:
+      - konga-db
+    ports:
+      - "1337:1337"
+    networks:
+      - fiware-network
+    environment:
+      - "DB_ADAPTER=postgres"
+      - "DB_HOST=konga-db"
+      - "DB_USER=konga"
+      - "DB_PASSWORD=konga"
+
+  # postgres for Orion
+  konga-db:
+    image: "postgres:9.5"
+    hostname: konga-db
+    container_name: konga-db
+    environment:
+      POSTGRES_USER: "konga"
+      POSTGRES_PASSWORD: "konga"
+      POSTGRES_DB: "konga"
+    networks:
+      - fiware-network
+    volumes:
+      - ./data/konga_data:/var/lib/postgresql/data
+
+networks:
+  fiware-network:
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  kong_data:
+  konga_data:
+  mongo-db1:
+
+secrets:
+  kong_postgres_password:
+    file: ./POSTGRES_PASSWORD
