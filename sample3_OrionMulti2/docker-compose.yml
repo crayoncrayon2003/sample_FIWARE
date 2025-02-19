@@ -1,0 +1,56 @@
+version: "3.8"
+services:
+  # Orion1
+  orion1:
+    image: quay.io/fiware/orion:3.11.0
+    hostname: orion1
+    container_name: fiware-orion1
+    restart: "on-failure"
+    depends_on:
+      mongo-db1:
+        condition: service_healthy
+    expose:
+      - "1026"
+    ports:
+      - "1026:1026"
+    networks:
+      - fiware-network
+    command: -dbhost mongo-db1 -logLevel DEBUG -noCache
+    healthcheck:
+      test: curl --fail -s http://orion1:1026/version || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  # MongoDB for Orion1
+  mongo-db1:
+    image: mongo:6.0
+    hostname: mongo-db1
+    container_name: mongo-db1
+    expose:
+      - "27017"
+    ports:
+      - "27017:27017"
+    networks:
+      - fiware-network
+    volumes:
+      - mongo-db1:/data
+    healthcheck:
+      test: ["CMD","mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+networks:
+  fiware-network:
+    name: fiware-network
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+
+volumes:
+  mongo-db1:
+  mongo-db2:
+  mongo-db3:
