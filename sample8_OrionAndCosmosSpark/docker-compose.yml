@@ -48,7 +48,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   spark-master:
-    image: bitnami/spark:3.5.3
+    # bitnami/spark was removed from Docker Hub (Bitnami deprecated its free catalog).
+    # bitnamilegacy/spark keeps the same /opt/bitnami/spark layout and SPARK_* env vars.
+    image: bitnamilegacy/spark:3.5.3
     hostname: spark-master
     container_name: spark-master
     restart: on-failure
@@ -76,7 +78,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   spark-worker1:
-    image: bitnami/spark:3.5.3
+    image: bitnamilegacy/spark:3.5.3
     hostname: spark-worker1
     container_name: spark-worker1
     restart: on-failure

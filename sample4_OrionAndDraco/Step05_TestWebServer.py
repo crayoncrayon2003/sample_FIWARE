@@ -54,6 +54,8 @@ if __name__ == "__main__":
     print("Start the Web server.")
     print("Keep it running and proceed to the next step.")
 
-    server = HTTPServer((config_ini['DEFAULT']['HOST_IP'], 8081), HTTPHandler)
+    # Bind to all interfaces so Draco (in its container) can reach this server
+    # via the docker host gateway (host.docker.internal).
+    server = HTTPServer(('0.0.0.0', 8081), HTTPHandler)
 
     server.serve_forever()

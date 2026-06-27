@@ -15,6 +15,9 @@ services:
       - "1026:1026"
     networks:
       - fiware-network
+    extra_hosts:
+      # Lets Orion reach the host-side WebServer (Step20) via host.docker.internal.
+      - "host.docker.internal:host-gateway"
     command: -dbhost mongo-db1 -logLevel DEBUG -noCache
     healthcheck:
       test: curl --fail -s http://orion1:1026/version || exit 1

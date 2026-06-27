@@ -6,7 +6,9 @@ config_ini = configparser.ConfigParser()
 config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
 
 ORION = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
-CYGNUS = 'http://{}:5050'.format(config_ini['DEFAULT']['HOST_IP'])
+# CYGNUS is the notification target that Orion (inside its container) uses to reach Cygnus,
+# so it must use the Cygnus host on the docker network, not the host's localhost.
+CYGNUS = 'http://{}:5050'.format(config_ini['DEFAULT']['CYGNUS_HOST'])
 
 SERVICE = 'service1'            # multi-tenant name
 SERVICEPATH = '/servicepath1'   # data storage path

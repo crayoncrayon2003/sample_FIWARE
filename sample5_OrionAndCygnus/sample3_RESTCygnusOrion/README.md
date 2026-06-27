@@ -6,7 +6,7 @@
 ## 1.1. Source1
 
 ### 1.1.1. Make source Jar
-```
+```sh
 cd flume-custom-source-const/project
 mvn clean package
 ```
@@ -21,7 +21,7 @@ To   : cygnus/lib/flume-custom-source-const-0.0.1-SNAPSHOT.jar
 ## 1.2. Source2
 
 ### 1.2.1. Make source Jar
-```
+```sh
 cd flume-custom-source-rest/project
 mvn clean package
 ```
@@ -35,7 +35,7 @@ To   : cygnus/lib/flume-custom-source-rest-0.0.1-SNAPSHOT.jar
 ## 1.3. Sink
 
 ### 1.3.1 Make Sink Jar
-```
+```sh
 cd flume-custom-sink-orion/project
 mvn clean package
 ```
@@ -47,16 +47,16 @@ To   : cygnus/lib/flume-custom-sinks-orion-0.0.1-SNAPSHOT.jar
 ```
 
 # 2. build and run
-```
+```bash
 docker compose up -d
 ```
 
 # 3. Confirm
-```
+```bash
 python3.12 Step01_orion_get_entities.py
 ```
 
 # 4. down
-```
+```bash
 docker compose down
 ```

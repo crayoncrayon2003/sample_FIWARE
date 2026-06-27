@@ -9,6 +9,10 @@ ORION = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
 QUANTUMLEAP = 'http://{}:8668'.format(config_ini['DEFAULT']['HOST_IP'])
 WEBSERVER = 'http://{}:8080'.format(config_ini['DEFAULT']['HOST_IP'])
 
+# URL that Orion (inside its container) uses to notify QuantumLeap.
+# Must be reachable on the docker network, not via the host's localhost.
+QUANTUMLEAP_NOTIFY = 'http://{}:8668'.format(config_ini['DEFAULT']['QUANTUMLEAP_HOST'])
+
 SERVICE = 'service1'            # multi-tenant name
 SERVICEPATH = '/servicepath1'   # data storage path
 
@@ -33,7 +37,7 @@ def setSubscriptions():
         },
         "notification": {
             "http": {
-                "url": QUANTUMLEAP+"/v2/notify"
+                "url": QUANTUMLEAP_NOTIFY+"/v2/notify"
             },
             "attrs": [],
             "onlyChangedAttrs": False,

@@ -1,5 +1,5 @@
 # build and run
-```
+```bash
 docker compose up -d
 ```
 
@@ -44,7 +44,7 @@ DASHBOARD -> DEFAULT, input following info
 * Protocols : http          (delete https)
 
 ### exec cliant request
-```
+```bash
 python Step01_sample1.py
 ```
 
@@ -71,7 +71,7 @@ python Step01_sample1.py
 * Protocols : http          (delete https)
 
 ### exec cliant request
-```
+```bash
 python Step02_sample2.py
 ```
 
@@ -130,12 +130,12 @@ python Step02_sample2.py
 * run on preflight  : YES
 
 ### exec cliant request
-```
+```bash
 python Step03_sample3.py
 ```
 
 
 # down
-```
+```bash
 docker compose down
 ```

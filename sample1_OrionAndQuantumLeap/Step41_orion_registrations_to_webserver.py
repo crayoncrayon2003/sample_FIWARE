@@ -8,7 +8,9 @@ config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.
 
 ORION = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
 QUANTUMLEAP = 'http://{}:8668'.format(config_ini['DEFAULT']['HOST_IP'])
-WEBSERVER = 'http://{}:8080'.format(config_ini['DEFAULT']['HOST_IP'])
+# WEBSERVER is the provider URL Orion (inside its container) calls to forward requests to the
+# host WebServer (Step20), so it must use the docker host gateway, not the host's localhost.
+WEBSERVER = 'http://{}:8080'.format(config_ini['DEFAULT']['WEBSERVER_HOST'])
 
 SERVICE = 'service1'            # multi-tenant name
 SERVICEPATH = '/servicepath1'   # data storage path

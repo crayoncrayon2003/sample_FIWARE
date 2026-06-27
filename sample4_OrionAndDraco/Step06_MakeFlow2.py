@@ -7,8 +7,11 @@ import dataclasses
 config_ini = configparser.ConfigParser()
 config_ini.read(os.path.join(os.path.dirname(os.path.abspath(__file__)),"config.ini"), encoding='utf-8')
 
-WEBSERVER = 'http://{}:8081'.format(config_ini['DEFAULT']['HOST_IP'])
-ORION1    = 'http://{}:1026'.format(config_ini['DEFAULT']['HOST_IP'])
+# These URLs are written into NiFi processors that run inside the Draco container,
+# so they must be reachable from within the container, not via the host's localhost.
+# WEBSERVER is the host-side Step05 server, reached via the docker host gateway.
+WEBSERVER = 'http://{}:8081'.format(config_ini['DEFAULT']['WEBSERVER_HOST'])
+ORION1    = 'http://{}:1026'.format(config_ini['DEFAULT']['ORION_HOST'])
 
 SERVICE = 'service1'            # multi-tenant name
 SERVICEPATH = '/servicepath1'   # data storage path
